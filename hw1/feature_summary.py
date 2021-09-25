@@ -13,33 +13,26 @@ import matplotlib.pyplot as plt
 data_path = "./dataset/"
 mfcc_path = "./mfcc/"
 
-MFCC_DIM = 20
+MFCC_DIM = 50
 
 
 def mean_mfcc(dataset="train"):
+    with open(f"{data_path}{dataset}_list.txt", "r") as f:
+        if dataset == "train":
+            mfcc_mat = np.zeros(shape=(MFCC_DIM, 1100))
+        else:
+            mfcc_mat = np.zeros(shape=(MFCC_DIM, 300))
 
-    f = open(data_path + dataset + "_list.txt", "r")
+        for i, file_name in enumerate(f):
+            # load mfcc file
+            file_name = file_name.rstrip("\n")
+            file_name = file_name.replace(".wav", ".npy")
+            mfcc_file = mfcc_path + file_name
+            mfcc = np.load(mfcc_file)
 
-    if dataset == "train":
-        mfcc_mat = np.zeros(shape=(MFCC_DIM, 1100))
-    else:
-        mfcc_mat = np.zeros(shape=(MFCC_DIM, 300))
-
-    i = 0
-    for file_name in f:
-
-        # load mfcc file
-        file_name = file_name.rstrip("\n")
-        file_name = file_name.replace(".wav", ".npy")
-        mfcc_file = mfcc_path + file_name
-        mfcc = np.load(mfcc_file)
-
-        # mean pooling
-        temp = np.mean(mfcc, axis=1)
-        mfcc_mat[:, i] = np.mean(mfcc, axis=1)
-        i = i + 1
-
-    f.close()
+            # mean pooling
+            temp = np.mean(mfcc, axis=1)
+            mfcc_mat[:, i] = np.mean(mfcc, axis=1)
 
     return mfcc_mat
 
