@@ -13,10 +13,18 @@ from feature_summary import *
 
 from sklearn.linear_model import SGDClassifier
 
+
 def train_model(train_X, train_Y, valid_X, valid_Y, hyper_param1):
 
     # Choose a classifier (here, linear SVM)
-    clf = SGDClassifier(verbose=0, loss="hinge", alpha=hyper_param1, max_iter=1000, penalty="l2", random_state=0)
+    clf = SGDClassifier(
+        verbose=0,
+        loss="hinge",
+        alpha=hyper_param1,
+        max_iter=1000,
+        penalty="l2",
+        random_state=0,
+    )
 
     # train
     clf.fit(train_X, train_Y)
@@ -24,19 +32,20 @@ def train_model(train_X, train_Y, valid_X, valid_Y, hyper_param1):
     # validation
     valid_Y_hat = clf.predict(valid_X)
 
-    accuracy = np.sum((valid_Y_hat == valid_Y))/300.0*100.0
-    print('validation accuracy = ' + str(accuracy) + ' %')
-    
+    accuracy = np.sum((valid_Y_hat == valid_Y)) / 300.0 * 100.0
+    print("validation accuracy = " + str(accuracy) + " %")
+
     return clf, accuracy
 
-if __name__ == '__main__':
 
-    # load data 
-    train_X = mean_mfcc('train')
-    valid_X = mean_mfcc('valid')
+if __name__ == "__main__":
+
+    # load data
+    train_X = mean_mfcc("train")
+    valid_X = mean_mfcc("valid")
 
     # label generation
-    cls = np.array([1,2,3,4,5,6,7,8,9,10])
+    cls = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     train_Y = np.repeat(cls, 110)
     valid_Y = np.repeat(cls, 30)
 
@@ -46,10 +55,10 @@ if __name__ == '__main__':
     train_X = train_X - train_X_mean
     train_X_std = np.std(train_X, axis=0)
     train_X = train_X / (train_X_std + 1e-5)
-    
+
     valid_X = valid_X.T
     valid_X = valid_X - train_X_mean
-    valid_X = valid_X/(train_X_std + 1e-5)
+    valid_X = valid_X / (train_X_std + 1e-5)
 
     # training model
     alphas = [0.0001, 0.001, 0.01, 0.1, 1, 10]
@@ -60,13 +69,12 @@ if __name__ == '__main__':
         clf, acc = train_model(train_X, train_Y, valid_X, valid_Y, a)
         model.append(clf)
         valid_acc.append(acc)
-        
+
     # choose the model that achieve the best validation accuracy
     final_model = model[np.argmax(valid_acc)]
 
     # now, evaluate the model with the test set
     valid_Y_hat = final_model.predict(valid_X)
 
-    accuracy = np.sum((valid_Y_hat == valid_Y))/300.0*100.0
-    print('final validation accuracy = ' + str(accuracy) + ' %')
-
+    accuracy = np.sum((valid_Y_hat == valid_Y)) / 300.0 * 100.0
+    print("final validation accuracy = " + str(accuracy) + " %")

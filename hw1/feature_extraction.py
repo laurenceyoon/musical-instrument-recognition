@@ -1,7 +1,7 @@
-# GCT634 (2018) HW1 
+# GCT634 (2018) HW1
 #
 # Mar-18-2018: initial version
-# 
+#
 # Juhan Nam
 #
 from tqdm import tqdm
@@ -9,8 +9,8 @@ import os
 import numpy as np
 import librosa
 
-data_path = './dataset/'
-mfcc_path = './mfcc/'
+data_path = "./dataset/"
+mfcc_path = "./mfcc/"
 
 SAMPLE_RATE = 22050
 WIN_LENGTH = 1024
@@ -19,18 +19,21 @@ N_FFT = 1024
 MEL_BINS = 128  # n_mels, used for mel filtering
 MFCC_DIM = 13  # used for mfcc (dct)
 
-def extract_mfcc(dataset='train'):
+
+def extract_mfcc(dataset="train"):
     with open(f"{data_path}{dataset}_list.txt", "r") as f:
         print(f"extracting mfcc from {f.name}")
-    
+
     for file_name in tqdm(f.readlines()):
         # load audio file
-        file_name = file_name.rstrip('\n')
+        file_name = file_name.rstrip("\n")
         file_path = data_path + file_name
         y, sr = librosa.load(file_path, sr=SAMPLE_RATE)
 
         # STFT
-        S = librosa.core.stft(y=y, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH)
+        S = librosa.core.stft(
+            y=y, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH
+        )
         # power spectrum
         D = np.abs(S) ** 2
 
@@ -51,14 +54,22 @@ def extract_mfcc(dataset='train'):
 
         # rms & zero crossing rate feature
         f_rms = librosa.feature.rms(y=y, hop_length=HOP_LENGTH, frame_length=WIN_LENGTH)
-        f_zero_crossing_rate = librosa.feature.zero_crossing_rate(y=y, frame_length=WIN_LENGTH, hop_length=HOP_LENGTH)
+        f_zero_crossing_rate = librosa.feature.zero_crossing_rate(
+            y=y, frame_length=WIN_LENGTH, hop_length=HOP_LENGTH
+        )
 
         # spectral statistics features
-        centroid = librosa.feature.spectral_centroid(S=mel_S, n_fft=N_FFT, win_length=WIN_LENGTH, hop_length=HOP_LENGTH)
+        centroid = librosa.feature.spectral_centroid(
+            S=mel_S, n_fft=N_FFT, win_length=WIN_LENGTH, hop_length=HOP_LENGTH
+        )
         # flatness = librosa.feature.spectral_flatness(S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH)
         # ^-- commented out because all datasets are not white noise.
-        bandwidth = librosa.feature.spectral_bandwidth(S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH)
-        contrast = librosa.feature.spectral_contrast(S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH)
+        bandwidth = librosa.feature.spectral_bandwidth(
+            S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH
+        )
+        contrast = librosa.feature.spectral_contrast(
+            S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH
+        )
 
         # concatenate all features
         features = np.concatenate(
@@ -76,7 +87,7 @@ def extract_mfcc(dataset='train'):
         )
 
         # save mfcc features as a file
-        file_name = file_name.replace('.wav', '.npy')
+        file_name = file_name.replace(".wav", ".npy")
         save_file = mfcc_path + file_name
 
         if not os.path.exists(os.path.dirname(save_file)):
@@ -84,6 +95,6 @@ def extract_mfcc(dataset='train'):
         np.save(save_file, features)
 
 
-if __name__ == '__main__':
-    extract_mfcc(dataset='train')                 
-    extract_mfcc(dataset='valid')                                  
+if __name__ == "__main__":
+    extract_mfcc(dataset="train")
+    extract_mfcc(dataset="valid")
