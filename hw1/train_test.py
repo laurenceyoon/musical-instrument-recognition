@@ -1,8 +1,8 @@
-# GCT634 (2018) HW1
+# GCT634 (2021) HW1
 #
-# Mar-18-2018: initial version
+# Sep-26-2021: updated version
 #
-# Juhan Nam
+# Jiyun Park
 #
 
 import sys
@@ -54,10 +54,10 @@ def _train_by_NuSVC_classifier(train_X, train_Y, valid_X, valid_Y, nu, kernel):
 
 
 def _train_by_MLP_classifier(
-    train_X, train_Y, valid_X, valid_Y, solver, learning_rate, alpha
+    train_X, train_Y, valid_X, valid_Y, activation, solver, learning_rate, alpha
 ):
     classifier = MLPClassifier(
-        activation="relu",
+        activation=activation,
         solver=solver,
         max_iter=5000,
         learning_rate=learning_rate,
@@ -124,22 +124,23 @@ def train_model(train_X, train_Y, valid_X, valid_Y, model: str, table: Texttable
         activations = ["identity", "logistic", "tanh", "relu"]
         solvers = ["lbfgs", "sgd", "adam"]
         learning_rates = ["constant", "invscaling", "adaptive"]
-        for solver in solvers:
-            for learning_rate in learning_rates:
-                for alpha in alphas:
-                    classifier, accuracy = _train_by_MLP_classifier(
-                        train_X, train_Y, valid_X, valid_Y, solver, learning_rate, alpha
-                    )
-                    classifiers.append(classifier)
-                    valid_acc.append(accuracy)
-                    table.add_row(
-                        [
-                            str(classifier),
-                            f"alpha={alpha}, solver={solver}, learning_rate={learning_rate}",
-                            "X",
-                            accuracy,
-                        ]
-                    )
+        for activation in activations:
+            for solver in solvers:
+                for learning_rate in learning_rates:
+                    for alpha in alphas:
+                        classifier, accuracy = _train_by_MLP_classifier(
+                            train_X, train_Y, valid_X, valid_Y, activation, solver, learning_rate, alpha
+                        )
+                        classifiers.append(classifier)
+                        valid_acc.append(accuracy)
+                        table.add_row(
+                            [
+                                str(classifier),
+                                f"activation={activation}, alpha={alpha}, solver={solver}, learning_rate={learning_rate}",
+                                "X",
+                                accuracy,
+                            ]
+                        )
     elif model == "GMM":  # 94.333%
         classifier, accuracy = _train_by_GMM_classifier(
             train_X, train_Y, valid_X, valid_Y

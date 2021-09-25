@@ -1,9 +1,10 @@
-# GCT634 (2018) HW1
+# GCT634 (2021) HW1
 #
-# Mar-18-2018: initial version
+# Sep-26-2021: updated version
 #
-# Juhan Nam
+# Jiyun Park
 #
+
 from tqdm import tqdm
 import os
 import numpy as np
