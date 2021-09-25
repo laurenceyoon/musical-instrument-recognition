@@ -97,4 +97,4 @@ GMM | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
 
 ## Discussion & Insights
 - Extracting spectral flatness does not affect the training when there's no white noise in the datasets.
-- If the features are sufficiently extracted to reflect the characteristics of each instrument, the accuracy of classification can be generally improved regardless of the type of model (even if additional feature extraction does not increase maximum accuracy).
+- Even if additional feature extraction does not increase the maximum accuracy of classification, the accuracy can be generally improved among most of models if the features are sufficiently extracted to reflect the characteristics of each instrument.
