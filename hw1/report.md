@@ -36,6 +36,13 @@ In order to extract feature that characterizes each musical instrument, the foll
 
 ## Feature Summary
 
+```shell
+$ python feature_summary.py
+```
+<img src="./img/mfcc.png" width="400" align="center">
+
+> In order to just plot MFCC visually in 13 dimensions in the image above, only the MFCC feature was extracted for convenience. The original code extracts much more features other than MFCC.
+
 For summarizing features, mean pooling in time domain is conducted.
 
 ## Train & Test
