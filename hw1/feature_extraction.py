@@ -4,7 +4,7 @@
 # 
 # Juhan Nam
 #
-import sys
+from tqdm import tqdm
 import os
 import numpy as np
 import librosa
@@ -12,23 +12,22 @@ import librosa
 data_path = './dataset/'
 mfcc_path = './mfcc/'
 
-MFCC_DIM = 20
+SAMPLE_RATE = 22050
+WIN_LENGTH = 1024
+HOP_LENGTH = 512
+N_FFT = 1024
+MEL_BINS = 128  # n_mels, used for mel filtering
+MFCC_DIM = 13  # used for mfcc (dct)
 
 def extract_mfcc(dataset='train'):
-    f = open(data_path + dataset + '_list.txt','r')
-
-    i = 0
-    for file_name in f:
-        # progress check
-        i = i + 1
-        if not (i % 10):
-            print(i)
-
+    with open(f"{data_path}{dataset}_list.txt", "r") as f:
+        print(f"extracting mfcc from {f.name}")
+    
+    for file_name in tqdm(f.readlines()):
         # load audio file
         file_name = file_name.rstrip('\n')
         file_path = data_path + file_name
-        y, sr = librosa.load(file_path, sr=22050)
-
+        y, sr = librosa.load(file_path, sr=SAMPLE_RATE)
 
         ##### Method 1
         mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=MFCC_DIM)
@@ -61,7 +60,6 @@ def extract_mfcc(dataset='train'):
             os.makedirs(os.path.dirname(save_file))
         np.save(save_file, mfcc)
 
-    f.close();
 
 if __name__ == '__main__':
     extract_mfcc(dataset='train')                 
