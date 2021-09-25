@@ -17,8 +17,12 @@ On top of these extracted features, 5 classification methods are implemented and
 
 ## Feature Extraction
 
-```python
+```shell
 $ python feature_extraction.py
+extracting mfcc from ./dataset/train_list.txt
+100%|█████████████████████████████████████████████████████████████████████████████████████| 1100/1100 [02:12<00:00,  8.33it/s]
+extracting mfcc from ./dataset/valid_list.txt
+100%|██████████████████████████████████████████████████████████████████████████████████████| 300/300 [00:38<00:00,  7.70it/s]
 ```
 
 `feature_extraction.py` loads audio files and extracts spectral features and stores them in `./mfcc` directory.
@@ -36,8 +40,40 @@ For summarizing features, mean pooling in time domain is conducted.
 
 ## Train & Test
 
-```python
+```shell
 $ python train_test.py
+[SGD]
+                classifier            hyper param    accuracy
+===============================================================
+SGDClassifier(random_state=0)         alpha=0.0001   95.333
+...
+
+[K-NN]
+                                  classifier                    hyper param                           accuracy
+==============================================================================================================
+KNeighborsClassifier(n_neighbors=10)                           algorithm=auto, weight=uniform         93.333
+KNeighborsClassifier(n_neighbors=10, weights='distance')       algorithm=auto, weight=distance        94.333
+...
+
+[NuSVC]
+          classifier                   hyper param         accuracy
+=====================================================================
+NuSVC(kernel='linear', nu=0.1)    nu=0.1, kernel=linear    95.667
+NuSVC(kernel='poly', nu=0.1)      nu=0.1, kernel=poly      97.333
+NuSVC(nu=0.1)                     nu=0.1, kernel=rbf       98
+...
+
+[MLP]
+                       classifier                          hyper param                                          accuracy
+===========================================================================================================================
+MLPClassifier(alpha=0.01, learning_rate='constant')        alpha=0.01, solver=adam, learning_rate=constant      97.333
+MLPClassifier(alpha=0.001, learning_rate='invscaling')     alpha=0.001, solver=adam, learning_rate=invscaling   97.667
+...
+
+[GMM]
+        classifier            hyper param   accuracy
+=======================================================
+GaussianProcessClassifier()                 97
 ```
 
 `train_test.py` runs whole traning process of 5 classifier models, and displays out the each accuracy with certain parameters.
@@ -53,3 +89,5 @@ MLP | `alpha=0.001, solver='adam', learning_rate='invscaling'` | 97.667%
 GMM | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
 
 ## Discussion & Insights
+- Extracting spectral flatness does not affect the training when there's no white noise in the datasets.
+- If the features are sufficiently extracted to reflect the characteristics of each instrument, the accuracy of classification can be generally improved regardless of the type of model (even if additional feature extraction does not increase maximum accuracy).
