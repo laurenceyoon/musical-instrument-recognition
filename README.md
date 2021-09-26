@@ -141,7 +141,7 @@ classifier | hyper parameter | highest accuracy
 SGD | `alpha=0.001` | 95.333%
 K-NN | `weight='distance'` | 94.333%
 **NuSVC** | `nu=0.1, kernel='rbf'` | **98%**
-MLP | `alpha=0.001, solver='adam', learning_rate='invscaling'` | 97.667%
+MLP | `activation='relu', alpha=0.1, solver='adam', learning_rate='invscaling'` | 97.667%
 GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
 
 ### Experiments with parameters of different classifier models
@@ -169,7 +169,7 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     weights | `["uniform", "distance"]`
 
     - The accuracy didn't change by the type of algorithms.
-    - For the weight function, `"distance"` got slightly better accuracy(94.33%) than the default `"uniform"` function(93.33%). The `"distance"` function has greater influence to closer neighbors of a query point than neighbors further away. This is because since the audio dataset has similar pattern with monophonic instrument sound of 4 seconds, each value had close distance from each other.
+    - For the weight function, `"distance"` got slightly better accuracy(94.33%) than the default `"uniform"` function(93.33%). The `"distance"` function has greater influence to closer neighbors of a query point than neighbors further away. 
 
 
 3. [`sklearn.svm.NuSVC`](https://scikit-learn.org/stable/modules/generated/sklearn.svm.NuSVC.html#sklearn.svm.NuSVC)
@@ -198,7 +198,7 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     alpha | `[0.0001, 0.001, 0.01, 0.1, 1, 10]`
     learning rate | `["constant", "invscaling", "adaptive"]`
 
-    - 
+    - Among the various options for different parameter, the combination of `activation='relu', alpha=0.1, solver='adam', learning_rate='invscaling'` offered the highest accuracy of 97.67%.
 
 5. [`sklearn.gaussian_process.GaussianProcessClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier)
     
@@ -210,12 +210,16 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     kernel | `'1.0 * RBF(1.0)'`
     optimizer | `'fmin_l_bfgs_b'`
 
+    Without any adjusting paramter, the accurary was fairly high for Gaussian Process Classifier.
+
 
 ## Discussion & Insights
 - Extracting spectral flatness does not affect the training when there's no white noise in the datasets.
-- 
 - Chroma mainly extracts tonal characteristics and removes timbre information so it doesn't fit into musical instrument classification problem, especially with 12 scale based western instruments.
 - Even if additional feature extraction does not increase the maximum accuracy of classification, the accuracy can be generally improved among most of models if the features are sufficiently extracted to reflect the characteristics of each instrument.
+- In K-NN classifier, weight function of 'distance' had better accuracy over 'uniform'. This is mostly because since the audio dataset has similar pattern with monophonic instrument sound of 4 seconds, each value had close distance from each other.
+
+---
 
 ## References
 - Baseline Code from: https://github.com/juhannam/gct634-ai613-2021/tree/main/hw1
