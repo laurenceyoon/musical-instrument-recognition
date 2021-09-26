@@ -1,8 +1,8 @@
 # Musical Instrument Recognition
 
-This project is based on the lecture 'Musical Application of Machine Learning(GCT634) by Prof. Juhan Nam at KAIST.
+This project is based on the lecture 'Musical Application of Machine Learning(GCT634, 2021 fall) by Prof. Juhan Nam of KAIST.
 
-The course aims to learn machine learning with applications to in the music and audio domains. Specificially, we handle various tasks in the topics of music and audio classification, automatic music transcription, source separation, sound synthesis, and music generation. 
+The course aims to learn machine learning with applications to in the music and audio domains. Specificially, it handles various tasks in the topics of music and audio classification, automatic music transcription, source separation, sound synthesis, and music generation. 
 This project focuses on the audio data representation & extraction, and classification with traditional machine learning models.
 
 ---
@@ -18,10 +18,10 @@ On top of these extracted features, 5 classification methods are implemented and
 
 ```shell
 $ python feature_extraction.py
-extracting mfcc from ./dataset/train_list.txt
-100%|█████████████████████████████████████████████████████████████████████████████████████| 1100/1100 [02:12<00:00,  8.33it/s]
-extracting mfcc from ./dataset/valid_list.txt
-100%|██████████████████████████████████████████████████████████████████████████████████████| 300/300 [00:38<00:00,  7.70it/s]
+extracting features from ./dataset/train_list.txt
+100%|███████████████████████████████████████████████████████████| 1100/1100 [02:12<00:00,  8.33it/s]
+extracting features from ./dataset/valid_list.txt
+100%|███████████████████████████████████████████████████████████| 300/300 [00:38<00:00,  7.70it/s]
 ```
 
 `feature_extraction.py` loads audio files and extracts spectral features and stores them in `./mfcc` directory.
@@ -80,7 +80,7 @@ MLPClassifier(alpha=0.001, learning_rate='invscaling')     alpha=0.001, solver=a
         classifier            hyper param   accuracy
 =======================================================
 GaussianProcessClassifier()                 97
-```
+``` 
 
 `train_test.py` runs whole traning process of 5 classifier models, and displays out the each accuracy with certain parameters.
 
@@ -97,3 +97,6 @@ GMM | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
 ## Discussion & Insights
 - Extracting spectral flatness does not affect the training when there's no white noise in the datasets.
 - Even if additional feature extraction does not increase the maximum accuracy of classification, the accuracy can be generally improved among most of models if the features are sufficiently extracted to reflect the characteristics of each instrument.
+
+## References
+- 

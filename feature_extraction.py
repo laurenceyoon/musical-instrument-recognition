@@ -23,7 +23,7 @@ MFCC_DIM = 13  # used for mfcc (dct)
 
 def extract_mfcc(dataset="train"):
     with open(f"{data_path}{dataset}_list.txt", "r") as f:
-        print(f"extracting mfcc from {f.name}")
+        print(f"extracting features from {f.name}")
 
         for file_name in tqdm(f.readlines()):
             # load audio file
