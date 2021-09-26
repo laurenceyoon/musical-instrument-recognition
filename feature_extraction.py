@@ -55,7 +55,9 @@ def extract_mfcc(dataset="train"):
             delta_delta_mfcc = librosa.feature.delta(mfcc, order=2)
 
             # rms & zero crossing rate feature
-            f_rms = librosa.feature.rms(y=y, hop_length=HOP_LENGTH, frame_length=WIN_LENGTH)
+            f_rms = librosa.feature.rms(
+                y=y, hop_length=HOP_LENGTH, frame_length=WIN_LENGTH
+            )
             f_zero_crossing_rate = librosa.feature.zero_crossing_rate(
                 y=y, frame_length=WIN_LENGTH, hop_length=HOP_LENGTH
             )
@@ -64,8 +66,6 @@ def extract_mfcc(dataset="train"):
             centroid = librosa.feature.spectral_centroid(
                 S=mel_S, n_fft=N_FFT, win_length=WIN_LENGTH, hop_length=HOP_LENGTH
             )
-            # flatness = librosa.feature.spectral_flatness(S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH)
-            # ^-- commented out because all datasets are not white noise.
             bandwidth = librosa.feature.spectral_bandwidth(
                 S=mel_S, n_fft=N_FFT, hop_length=HOP_LENGTH, win_length=WIN_LENGTH
             )

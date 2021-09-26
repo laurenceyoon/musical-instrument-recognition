@@ -26,14 +26,9 @@ def extract_accuracy(classifier, train_X, train_Y, valid_X, valid_Y):
     return classifier, accuracy
 
 
-def _train_by_SGD_classifier(train_X, train_Y, valid_X, valid_Y, alpha):
+def _train_by_SGD_classifier(train_X, train_Y, valid_X, valid_Y, alpha, loss):
     classifier = SGDClassifier(
-        verbose=0,
-        loss="hinge",
-        alpha=alpha,
-        max_iter=1000,
-        penalty="l2",
-        random_state=0,
+        verbose=0, loss=loss, alpha=alpha, max_iter=5000, penalty="l2", random_state=0,
     )
     return extract_accuracy(classifier, train_X, train_Y, valid_X, valid_Y)
 
@@ -63,7 +58,7 @@ def _train_by_MLP_classifier(
     return extract_accuracy(classifier, train_X, train_Y, valid_X, valid_Y)
 
 
-def _train_by_GMM_classifier(train_X, train_Y, valid_X, valid_Y):
+def _train_by_GPC_classifier(train_X, train_Y, valid_X, valid_Y):
     classifier = GaussianProcessClassifier()
     return extract_accuracy(classifier, train_X, train_Y, valid_X, valid_Y)
 
@@ -76,13 +71,17 @@ def train_model(train_X, train_Y, valid_X, valid_Y, model: str, table: Texttable
     # Choose a classifier (here, linear SVM)
     if model == "SGD":  # 96%
         alphas = [0.0001, 0.001, 0.01, 0.1, 1, 10]
-        for alpha in alphas:
-            classifier, accuracy = _train_by_SGD_classifier(
-                train_X, train_Y, valid_X, valid_Y, alpha
-            )
-            classifiers.append(classifier)
-            valid_acc.append(accuracy)
-            table.add_row([str(classifier), f"alpha={alpha}", "X", accuracy])
+        losses = ["hinge", "log", "squared_hinge"]
+        for loss in losses:
+            for alpha in alphas:
+                classifier, accuracy = _train_by_SGD_classifier(
+                    train_X, train_Y, valid_X, valid_Y, alpha, loss
+                )
+                classifiers.append(classifier)
+                valid_acc.append(accuracy)
+                table.add_row(
+                    [str(classifier), f"loss={loss}, alpha={alpha}", "X", accuracy]
+                )
     elif model == "K-NN":  # 89.667% (weight: distance)
         algorithms = ["auto", "ball_tree", "kd_tree", "brute"]
         weights = ["uniform", "distance"]
@@ -126,7 +125,14 @@ def train_model(train_X, train_Y, valid_X, valid_Y, model: str, table: Texttable
                 for learning_rate in learning_rates:
                     for alpha in alphas:
                         classifier, accuracy = _train_by_MLP_classifier(
-                            train_X, train_Y, valid_X, valid_Y, activation, solver, learning_rate, alpha
+                            train_X,
+                            train_Y,
+                            valid_X,
+                            valid_Y,
+                            activation,
+                            solver,
+                            learning_rate,
+                            alpha,
                         )
                         classifiers.append(classifier)
                         valid_acc.append(accuracy)
@@ -138,8 +144,8 @@ def train_model(train_X, train_Y, valid_X, valid_Y, model: str, table: Texttable
                                 accuracy,
                             ]
                         )
-    elif model == "GMM":  # 94.333%
-        classifier, accuracy = _train_by_GMM_classifier(
+    elif model == "GPC":  # 94.333%
+        classifier, accuracy = _train_by_GPC_classifier(
             train_X, train_Y, valid_X, valid_Y
         )
         classifiers.append(classifier)
@@ -176,7 +182,7 @@ if __name__ == "__main__":
 
     model = []
     valid_acc = []
-    algorithms = ["SGD", "K-NN", "NuSVC", "MLP", "GMM"]
+    algorithms = ["SGD", "K-NN", "NuSVC", "MLP", "GPC"]
     for algorithm in algorithms:
         table = Texttable(max_width=300)
         table.header(["classifier", "hyper param", "is final?", "accuracy"])
