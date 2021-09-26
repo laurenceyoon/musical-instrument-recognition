@@ -5,10 +5,11 @@
 # Jiyun Park
 #
 
-from tqdm import tqdm
 import os
-import numpy as np
+
 import librosa
+import numpy as np
+from tqdm import tqdm
 
 data_path = "./dataset/"
 mfcc_path = "./mfcc/"

@@ -5,15 +5,12 @@
 # Jiyun Park
 #
 
-import sys
-import os
 import numpy as np
-import librosa
-from sklearn.linear_model import SGDClassifier
-from sklearn.svm import NuSVC
 from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.linear_model import SGDClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.svm import NuSVC
 from texttable import Texttable
 
 from feature_summary import *
@@ -110,7 +107,7 @@ def train_model(train_X, train_Y, valid_X, valid_Y, model: str, table: Texttable
         for nu in nus:
             for kernel in kernels:
                 classifier, accuracy = _train_by_NuSVC_classifier(
-                    train_X, train_Y, valid_X, valid_Y, nu, kernel
+                    train_X, train_Y, valid_X, valid_Y, nu, kernel,
                 )
                 classifiers.append(classifier)
                 valid_acc.append(accuracy)

@@ -5,10 +5,8 @@
 # Jiyun Park
 #
 
-import sys
-import os
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 data_path = "./dataset/"
 mfcc_path = "./mfcc/"
@@ -31,7 +29,6 @@ def mean_mfcc(dataset="train"):
             mfcc = np.load(mfcc_file)
 
             # mean pooling
-            temp = np.mean(mfcc, axis=1)
             mfcc_mat[:, i] = np.mean(mfcc, axis=1)
 
     return mfcc_mat
