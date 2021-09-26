@@ -60,7 +60,7 @@ To capture those aspects from audio, extracting frame-level audio features are n
   - Computation steps: 
 
       <img src="./img/mfcc_step.png" width="600" align="center">
-      
+
     1. From audio file, compute STFT(matrix `S`) with `n_fft=1024, hop_length=512, win_length=1024`.
     2. Conduct power to spectrum by `D = np.abs(S) ** 2`
     3. Apply Mel filter with `n_mels=128` bins.
@@ -132,7 +132,7 @@ MLPClassifier(alpha=0.01, learning_rate='invscaling')    alpha=0.01, solver=adam
 GaussianProcessClassifier()                 97
 ``` 
 
-`train_test.py` runs whole traning process of 5 classifier models, and displays out the each accuracy with certain parameters.
+`train_test.py` runs whole training process of 5 classifier models, and displays out the each accuracy with certain parameters.
 
 5 different classification models are applied to train and test musical instrument classification. The result of accuracy of training is summarized in the table below.
 
@@ -154,7 +154,10 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     Parameter | Options 
     --- | ---
     alpha | `[0.0001, 0.001, 0.01, 0.1, 1, 10]`
-    loss | `["hinge", "log", "squared_hinge"]`
+    loss | `["hinge", "log", "squared_hinge", "modified_huber", "squared_loss", "huber"]`
+
+    - The higher the alpha value, the accuracy tended to get lower for most cases.
+    - For the loss function, `"hinge", "log", "squared_hinge"` get the same maximum accuracy above 95%, wherewas regression loss function didn't get the score. (`"squared_loss"`: 54.67%, `"huber"`: 81.67%)
 
 2. [`sklearn.neighbors.KNeighborsClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier)
 
@@ -164,6 +167,9 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     --- | ---
     algorithm | `["auto", "ball_tree", "kd_tree", "brute"]`
     weights | `["uniform", "distance"]`
+
+    - The accuracy didn't change by the type of algorithms.
+    - For the weight function, `"distance"` got slightly better accuracy(94.33%) than the default `"uniform"` function(93.33%). The `"distance"` function has greater influence to closer neighbors of a query point than neighbors further away. This is because since the audio dataset has similar pattern with monophonic instrument sound of 4 seconds, each value had close distance from each other.
 
 
 3. [`sklearn.svm.NuSVC`](https://scikit-learn.org/stable/modules/generated/sklearn.svm.NuSVC.html#sklearn.svm.NuSVC)
@@ -175,6 +181,10 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     --- | ---
     nu | `[0.1, 0.3, 0.5, 0.9]`
     kernel | `["linear", "poly", "rbf", "sigmoid"]`
+
+    - The lower the `nu` value, the higher the accuracy.
+    - Overall, `"rbf"` kernel (which is default) had the highest accuracy of 98.0% (nu=0.1), `"sigmoid"` had the least accuracy of 58.33% (nu=0.1)
+    - SVC with rbf kernel is non-linear SVC classification.
 
 4. [`sklearn.neural_network.MLPClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier)
     
@@ -188,10 +198,12 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
     alpha | `[0.0001, 0.001, 0.01, 0.1, 1, 10]`
     learning rate | `["constant", "invscaling", "adaptive"]`
 
+    - 
+
 5. [`sklearn.gaussian_process.GaussianProcessClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier)
     
     Gaussian process classification (GPC) based on Laplace approximation.
-    Only for the default paramter has been tested in this training:
+    Only the default option of each parameter has been tested in this training:
 
     Parameter | Options (default)
     --- | ---
@@ -201,11 +213,11 @@ GPC | `kernel='1.0 * RBF(1.0)', optimizer='fmin_l_bfgs_b'` (default) | 97%
 
 ## Discussion & Insights
 - Extracting spectral flatness does not affect the training when there's no white noise in the datasets.
-- The type of algorithm in K-Nearest Neightbor Classifier didn't change the accuracy of classification for this dataset.
+- 
 - Chroma mainly extracts tonal characteristics and removes timbre information so it doesn't fit into musical instrument classification problem, especially with 12 scale based western instruments.
 - Even if additional feature extraction does not increase the maximum accuracy of classification, the accuracy can be generally improved among most of models if the features are sufficiently extracted to reflect the characteristics of each instrument.
 
 ## References
-- [GCT634-AI613-2021](https://github.com/juhannam/gct634-ai613-2021/tree/main/hw1)
+- Baseline Code from: https://github.com/juhannam/gct634-ai613-2021/tree/main/hw1
 - Tzanetakis, G., & Cook, P. (2002). Musical genre classification of audio signals. IEEE Transactions on speech and audio processing, 10(5), 293-302.
 - Agostini, G., Longari, M., & Pollastri, E. (2003). Musical instrument timbres classification with spectral features. EURASIP Journal on Advances in Signal Processing, 2003(1), 1-10.

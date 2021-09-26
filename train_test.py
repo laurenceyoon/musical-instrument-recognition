@@ -71,7 +71,7 @@ def train_model(train_X, train_Y, valid_X, valid_Y, model: str, table: Texttable
     # Choose a classifier (here, linear SVM)
     if model == "SGD":  # 96%
         alphas = [0.0001, 0.001, 0.01, 0.1, 1, 10]
-        losses = ["hinge", "log", "squared_hinge"]
+        losses = ["hinge", "log", "squared_hinge", "modified_huber", "squared_loss", "huber"]
         for loss in losses:
             for alpha in alphas:
                 classifier, accuracy = _train_by_SGD_classifier(
@@ -182,7 +182,8 @@ if __name__ == "__main__":
 
     model = []
     valid_acc = []
-    algorithms = ["SGD", "K-NN", "NuSVC", "MLP", "GPC"]
+    # algorithms = ["SGD", "K-NN", "NuSVC", "MLP", "GPC"]
+    algorithms = ["MLP"]
     for algorithm in algorithms:
         table = Texttable(max_width=300)
         table.header(["classifier", "hyper param", "is final?", "accuracy"])
