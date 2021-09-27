@@ -78,7 +78,9 @@ To capture those aspects from audio, extracting frame-level audio features are n
 ```shell
 $ python feature_summary.py
 ```
-<img src="./img/mfcc.png" width="400" align="center">
+<p align="center">
+  <img src="./img/mfcc.png" width="400">
+</p>
 
 > In order to just plot MFCC visually in 13 dimensions in the image above, only the MFCC feature was extracted for convenience. The original code extracts much more features other than MFCC.
 
